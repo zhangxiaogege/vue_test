@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <!-- 头部 -->
     <div class="header">
       <img src="../../static/images/logo.png" alt="">
       <div class="inputWrap">
@@ -7,15 +8,20 @@
       </div>
       <div class="login">登录</div>
     </div>
+    <!-- 导航 -->
     <div class="navScroll" ref="navScroll">
       <div class="navScrollList">
-        <div class="navItem recommend" @click="handleNav(0)" :class="{active: navId === 0}">推荐</div>
+        <div class="navItem recommendItem" @click="handleNav(0)" :class="{active: navId === 0}">推荐</div>
         <div v-for="navItem in navList" :key="navItem.id"
         class="navItem"
         :class="{active: navId === navItem.id}"
         @click="handleNav(navItem.id)"
         >{{navItem.name}}</div>
       </div>
+    </div>
+    <!-- 内容区 -->
+    <div class="contentScroll" v-if="homeData" ref="contentScroll">
+      <Recommend ></Recommend>
     </div>
   </div>
 </template>
@@ -25,6 +31,7 @@ import {Icon} from 'vant'
 import BScroll from 'better-scroll'
 import {mapState,mapActions} from 'vuex'
 import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
+import  Recommend from 'components/Recommend/Recommend'
   export default {
     data () {
       return {
@@ -32,7 +39,8 @@ import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
       }
     },
     components: {
-      [Icon.name] : Icon
+      [Icon.name] : Icon,
+      "Recommend":Recommend
     },
     computed: {
       ...mapState({homeData:state=> state.home.homeData,
@@ -52,12 +60,22 @@ import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
             click: true
           })
         })
+      },
+      //内容区scroll
+      contentScroll(){
+        this.$nextTick(()=>{
+          this.contentScroll = new BScroll(this.$refs.contentScroll,{
+            scrollY: true,
+            click: true
+          })
+        })
       }
     },
     async mounted () {
       await this[GETINDEXDATA](),
       await this[GETNAVDATA](),
       this.navScroll()
+      this.contentScroll()
     }
   }
 </script>
@@ -69,10 +87,13 @@ import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
     overflow hidden
     .header
       height 90px
-      width 750px
+      width 100%
       padding  0 30px
       display flex
       align-items center
+      position relative
+      z-index 90 
+      background #fff
       img 
         width 138px
         height 40px
@@ -98,6 +119,11 @@ import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
         border-radius 5px
     .navScroll
       height 60px
+      width 100%
+      margin-bottom 3px
+      position relative
+      z-index 90 
+      background #fff
       .navScrollList
         white-space nowrap
         font-size 28px
@@ -109,10 +135,10 @@ import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
           text-align center
           line-height 60px
           color #333
-          margin-left 30px
+          margin 0 15px
           &.active
             border-bottom 4px solid  #dd1a21 
-        .recommend
+        .recommendItem
           width 80px
          
 
