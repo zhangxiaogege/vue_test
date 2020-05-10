@@ -21,6 +21,32 @@ router.get('/getNavData', (ctx, next) => {
 	
 });
 
+//导航对应的页面数据
+let  indexCateList=  require('./datas/indexCateList.json');
+router.get('/getNavCateListData', (ctx, next) => {
+	ctx.body = indexCateList
+	
+});
+
+//分类页面左侧导航数据
+let  cateNavDatas=  require('./datas/cateNavDatas.json');
+router.get('/getCateNavDatas', (ctx, next) => {
+	ctx.body = cateNavDatas
+	
+});
+//分类页面右侧内容数据
+let  cateLists=  require('./datas/cateLists.json');
+router.get('/getCateLists', (ctx, next) => {
+	ctx.body = cateLists
+	
+});
+//值得买页面导航数据
+
+
+
+
+
+
 // // 主页导航页面数据
 // let indexCateList = require('./datas/cateList.json')
 // router.get('/getindexCateList', async (ctx, next) => {

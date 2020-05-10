@@ -3,26 +3,32 @@
     <!-- 头部 -->
     <div class="header">
       <img src="../../static/images/logo.png" alt="">
-      <div class="inputWrap">
-        <span class="input"><van-icon name="search" class="icon" /> 请输入关键字</span>
+      <div class="inputWrap" @click="toSearch">
+        <span class="input"><van-icon name="search" class="icon" /> 搜索商品</span>
       </div>
       <div class="login">登录</div>
     </div>
     <!-- 导航 -->
     <div class="navScroll" ref="navScroll">
-      <div class="navScrollList">
-        <div class="navItem recommendItem" @click="handleNav(0)" :class="{active: navId === 0}">推荐</div>
-        <div v-for="navItem in navList" :key="navItem.id"
-        class="navItem"
-        :class="{active: navId === navItem.id}"
-        @click="handleNav(navItem.id)"
-        >{{navItem.name}}</div>
+      <div class="navScrollList" ref="navScrollList">
+        <div class="navItemWrap recommendItemWrap" @click="handleNav(0,0)">
+          <div class="navItem "  :class="{active: navId === 0}">推荐</div>
+        </div>
+        <div v-for="(navItem,index) in navList" :key="navItem.id"
+          class="navItemWrap"
+          @click="handleNav(navItem.id,index+1)"
+          >
+          <div class="navItem"  :class="{active: navId === navItem.id}">
+            {{navItem.name}}
+          </div>
+        </div>
       </div>
     </div>
     <!-- 内容区 -->
-    <div class="contentScroll" v-if="homeData" ref="contentScroll">
-      <Recommend ></Recommend>
-    </div>
+   
+      <Recommend v-if="navId===0"></Recommend>
+      <CateGoryListOfNav v-else  :navId='navId'></CateGoryListOfNav>
+    
   </div>
 </template>
 
@@ -32,6 +38,7 @@ import BScroll from 'better-scroll'
 import {mapState,mapActions} from 'vuex'
 import {GETINDEXDATA,GETNAVDATA} from 'store/mutaions_type'
 import  Recommend from 'components/Recommend/Recommend'
+import CateGoryListOfNav from 'components/CateGoryListOfNav/CateGoryListOfNav'
   export default {
     data () {
       return {
@@ -40,7 +47,8 @@ import  Recommend from 'components/Recommend/Recommend'
     },
     components: {
       [Icon.name] : Icon,
-      "Recommend":Recommend
+      "Recommend":Recommend,
+      "CateGoryListOfNav":CateGoryListOfNav
     },
     computed: {
       ...mapState({homeData:state=> state.home.homeData,
@@ -49,34 +57,39 @@ import  Recommend from 'components/Recommend/Recommend'
     },
     methods: {
       ...mapActions([GETINDEXDATA,GETNAVDATA]),
-      handleNav(id){
+      handleNav(id,index){
         this.navId = id
+        let navScrollList = this.$refs.navScrollList
+        let lis = navScrollList.children
+        // console.log(lis)
+        this.navScroll.scrollToElement(lis[index], 1000)
       },
       //导航scroll
       navScroll(){
         this.$nextTick(()=>{
           this.navScroll = new BScroll(this.$refs.navScroll,{
             scrollX: true,
-            click: true
+            click: true,
           })
         })
       },
-      //内容区scroll
-      contentScroll(){
-        this.$nextTick(()=>{
-          this.contentScroll = new BScroll(this.$refs.contentScroll,{
-            scrollY: true,
-            click: true
-          })
-        })
+      //跳转至搜索页面
+      toSearch(){
+        this.$router.push({ path: 'search' })
       }
+     
     },
     async mounted () {
       await this[GETINDEXDATA](),
       await this[GETNAVDATA](),
       this.navScroll()
-      this.contentScroll()
-    }
+     
+     
+    },
+    // updated () {
+    //   
+    // }
+
   }
 </script>
 
@@ -128,19 +141,23 @@ import  Recommend from 'components/Recommend/Recommend'
         white-space nowrap
         font-size 28px
         display inline-block
-        .navItem
+        .navItemWrap
           display inline-block
           width 130px
           height 60px
-          text-align center
-          line-height 60px
-          color #333
-          margin 0 15px
-          &.active
-            border-bottom 4px solid  #dd1a21 
-        .recommendItem
-          width 80px
-         
+          padding  0 20px
+          .navItem
+            display inline-block
+            width 100%
+            height 100%
+            text-align center
+            line-height 60px
+            color #333
+            &.active
+              border-bottom 4px solid  #dd1a21 
+        .recommendItemWrap
+          width 100px
+    
 
           
 

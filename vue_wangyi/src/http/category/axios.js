@@ -9,7 +9,7 @@ const axiosIns = axios.create({
 
 //为axios实例添加拦截器
 axiosIns.interceptors.request.use(axiosConfig => {
-  config.hooks && config.hooks.beforeReq && config.hooks.beforeReq.call(config,axiosConfig)
+  config.hooks && config.hooks.beforeReq && config.hooks.beforeReq.call(config)
   return axiosConfig;
 })
 axiosIns.interceptors.response.use((response)=>{

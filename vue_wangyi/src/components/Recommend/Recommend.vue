@@ -1,4 +1,5 @@
 <template>
+ <div class="contentScroll" v-if="homeData" ref="recommendScroll">
     <div class="recommend" >
         <!-- 轮播 -->
             <van-swipe  class="swiper"
@@ -6,20 +7,8 @@
             loop
             :show-indicators =false
             >
-                <van-swipe-item class="swiperItem">
-                    <img src="https://yanxuan.nosdn.127.net/31b0c2a0424fe7b152950fa0ed53f8b6.jpg?type=webp&imageView&quality=75&thumbnail=750x0" alt="">
-                </van-swipe-item>
-                <van-swipe-item class="swiperItem">
-                    <img src="https://yanxuan.nosdn.127.net/84d82137e854e58bf26791db3ba203b8.jpg?type=webp&imageView&quality=75&thumbnail=750x0" alt="">
-                </van-swipe-item>
-                <van-swipe-item class="swiperItem">
-                    <img src="http://yanxuan-miaobi.nos-jd.163yun.com/3988777_1_6_wap_ac032a0fccc1195727761846263f20ba.jpg?type=webp&imageView&quality=75&thumbnail=750x0" alt="">
-                </van-swipe-item>
-                <van-swipe-item class="swiperItem">
-                    <img src="https://yanxuan.nosdn.127.net/b7f94a107096c60038eba24f542d62c5.jpg?type=webp&imageView&quality=75&thumbnail=750x0" alt="">
-                </van-swipe-item>
-                <van-swipe-item class="swiperItem">
-                    <img src="https://yanxuan.nosdn.127.net/6569149eeece0e39b9b38554570235da.jpg?type=webp&imageView&quality=75&thumbnail=750x0" alt="">
+                <van-swipe-item class="swiperItem" v-for="item in homeData.focusList" :key="item.id">
+                    <img :src="item.picUrl" alt="">
                 </van-swipe-item>
             </van-swipe>
         
@@ -31,7 +20,7 @@
                 </div>
             </div>
             <!-- 列表 -->
-            <div class="kinkongList">
+            <div class="kinkongList" v-if="homeData.kingKongModule">
                 <div class="kinkongItem" v-for="(item,index) in (homeData.kingKongModule.kingKongList)" :key="index">
                     <img :src="item.picUrl" alt="">
                     <div>{{item.text}}</div>
@@ -41,24 +30,39 @@
             <div class="advertising">
                 <img src="https://yanxuan.nosdn.127.net/7db5ad89be165b82b6a3e261029d0122.gif?imageView&quality=75" alt="">
             </div>
-            <div class="floor">
+            <div class="floor" v-if="homeData.categoryHotSellModule">
                 <!-- 新人专享礼 -->
                 <div class="activity">
                     <div class="title"><span></span><p>新人专享礼</p><span></span></div>
                     <div class="content">
-                        <div class="left"></div>
-                        <div class="right"></div>
+                        <div class="left">
+                            <p>新人专享礼包</p>
+                            <img src="//yanxuan.nosdn.127.net/352b0ea9b2d058094956efde167ef852.png" alt="">
+                        </div>
+                        <div class="right">
+                            <div  class="rightItem " :class="'rightItem'+index"    v-for="(item,index) in homeData.indexActivityModule" :key="index">
+                                <p>{{item.title}}</p>
+                                <span>{{item.tag}}</span>
+                                <img :src="item.picUrl" alt="">
+                            </div>
+                        </div>
                     </div>
                 </div>
-
+                <div class="floorItem">
+                    <div class="itemTitle">{{homeData.categoryHotSellModule.title}}</div>
+                    <CategoryHotList :CategoryHotList='homeData.categoryHotSellModule.categoryList'></CategoryHotList>
+                </div>
             </div>
         
     </div>
+ </div>
 </template>
 
 <script>
 import { Swipe, SwipeItem } from 'vant';
 import {mapState} from 'vuex'
+import BScroll from 'better-scroll'
+import CategoryHotList from 'components/CategoryHotList/CategoryHotList'
     export default {
         data () {
             return {
@@ -67,18 +71,37 @@ import {mapState} from 'vuex'
         },
         components: {
             [Swipe.name]:Swipe,
-            [SwipeItem.name]:SwipeItem
+            [SwipeItem.name]:SwipeItem,
+            "CategoryHotList":CategoryHotList
         },
         computed: {
            ...mapState({homeData:state=> state.home.homeData
-        })
+             }),
+       
         },
+        methods: {
+             //内容区scroll
+            recommendScroll(){
+                this.$nextTick(()=>{
+                this.recommendScroll = new BScroll(this.$refs.recommendScroll,{
+                    scrollY: true,
+                    click: true
+                })
+                })
+            }
+        },
+        mounted () {
+             this.recommendScroll()
+        }
+
        
           
     }
 </script>
 
 <style lang="stylus" scoped>
+.contentScroll   
+    height calc(100vh - 150px)
     .recommend
         .swiper
             position relative
@@ -128,11 +151,15 @@ import {mapState} from 'vuex'
         .floor
             background #eee
             overflow hidden
+            height 10000px
             .activity
                 width 100%
                 margin-top 20px
                 background-color #fff
-                pading 0 30px
+                padding  0   30px
+                box-sizing border-box
+                height 560px
+                overflow hidden
                 .title
                     width 100%
                     height 90px
@@ -148,6 +175,65 @@ import {mapState} from 'vuex'
                         margin 0 10px
                 .content
                     width 100%
-                    background-color pink 
-                    
+                    display flex
+                    height 434px
+                    box-sizing border-box
+                   .left
+                        width 50%
+                        height 434px
+                        background #F9E9CF
+                        display flex
+                        flex-direction column
+                        p
+                            font-size 32px
+                            padding 30px 0 0 30px
+                        img 
+                            width 258px
+                            height 258px
+                            align-self center
+                            margin-top 40px
+                    .right
+                        width 50%  
+                        height 434px
+                        .rightItem
+                            position relative
+                            height 50%
+                            width 100%
+                            box-sizing border-box
+                            margin-left 6px
+                            padding 20px 30px
+                            background  #F9E9CF
+                            p
+                                font-size 32px
+                                color #333
+                            span 
+                                font-size 24px
+                                line-height 50px
+                                color #7f7f7f
+                            img 
+                                width 200px
+                                height 200px
+                                position absolute
+                                bottom 10px
+                                right 10px
+                        .rightItem1
+                            margin-top 6px
+                            span 
+                                background #cbb693
+                                color #ffffff
+                                padding 5px  5px 0 5px
+            .floorItem
+                width 100%
+                margin-top 20px
+                background-color #fff
+                padding  0   30px
+                box-sizing border-box
+                .itemTitle
+                    width 100%
+                    height 100px
+                    color #333
+                    font-size 32px
+                    line-height 100px
+
+
 </style>

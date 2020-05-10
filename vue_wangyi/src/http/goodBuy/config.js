@@ -1,0 +1,25 @@
+export default {
+  name:"seller",
+  api:{
+    getGoodBuyNav:{
+      url:"/topic/v1/know/navWap.json",
+      method:"get",
+      corsUrl:"/wangyi"
+    },
+    getGoodBuyDatas:{
+      url:"/topic/v1/find/recManual.json",
+      method:"get",
+      corsUrl:"/wangyi"
+    },
+    getSearchInitData:{
+      url:"/xhr/search/init.json",
+      method:"get",
+      corsUrl:"/wangyi"
+    },
+    getSearchData:{
+      url:"/xhr/search/searchAutoComplete.json",
+      method:"get",
+      corsUrl:"/wangyi"
+    }
+  }
+}

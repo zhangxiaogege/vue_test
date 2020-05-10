@@ -1,7 +1,9 @@
 <template>
   <div class="app">
     <router-view></router-view>
-    <van-tabbar class="tabbar" 
+    <van-tabbar 
+    v-show="$route.meta.showTabBar"
+    class="tabbar" 
     v-model="active" 
     active-color="#D43C33" 
     inactive-color="#555"

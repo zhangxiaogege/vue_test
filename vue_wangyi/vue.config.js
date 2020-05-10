@@ -2,7 +2,23 @@
 module.exports = {
   devServer:{
     open: true,
-    proxy: 'http://localhost:3002'
+    proxy: {
+    '/3002': {
+        target: 'http://localhost:3002',
+        changeOrigin: true,
+        pathRewrite:{
+            "^/3002":""
+        }
+    },
+    '/wangyi': {
+        target: 'https://m.you.163.com',
+        changeOrigin: true,
+        secure:false,
+        pathRewrite:{
+            "^/wangyi":""
+        }
+    }
+    }
   },
   css: {
     loaderOptions: {
@@ -23,7 +39,8 @@ configureWebpack: {
             'components': '@/components',
             'http': '@/http',
             'pages': '@/pages',
-            'store':'@/store'
+            'store':'@/store',
+            'static':'@/static',
         }
     }
 }

@@ -4,10 +4,22 @@ export default {
     getIndexData:{
       url:"/getIndexData",
       method:"get",
+      corsUrl:"/3002"
     },
     getNavData:{
       url:"/getNavData",
       method:"get",
+      corsUrl:"/3002"
+    },
+    getNavCateListData:{
+      url:"/getNavCateListData",
+      method:"get",
+      corsUrl:"/3002"
+    },
+    getCateNavDatas:{
+      url:"/getCateNavDatas",
+      method:"get",
+      corsUrl:"/3002"
     }
   }
 }
